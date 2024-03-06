@@ -1,0 +1,31 @@
+.container {
+  border: 1px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 30rem;
+
+}
+
+
+.relogio span {
+  font-size: 10rem;
+}
+
+/* teste */
+
+.total {
+  border: 1px solid rgb(0, 0, 0);
+  width: 100%;
+  height: 1rem;
+}
+
+.progress {
+  border: 1px solid red;
+  height: 100%;
+  transition: width 1s;
+  
+  background-color: white;
+}
