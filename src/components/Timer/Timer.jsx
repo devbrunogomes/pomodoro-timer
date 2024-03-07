@@ -107,9 +107,9 @@ export const Timer = () => {
       </section>
       <section className="timerAndProgressWrapper">
         <div className="relogio">
-          <span>{minutes < 10 ? `0${minutes}` : minutes}</span>
-          <span>:</span>
-          <span>{seconds < 10 ? `0${seconds}` : seconds}</span>
+          <p>{minutes < 10 ? `0${minutes}` : minutes}</p>
+          <p>:</p>
+          <p>{seconds < 10 ? `0${seconds}` : seconds}</p>
         </div>
 
         <div className="total">

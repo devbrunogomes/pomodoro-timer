@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background: rgba(255, 255, 255, 0.09);
   border-radius: 16px;
@@ -11,10 +11,29 @@
   backdrop-filter: blur(6.4px);
   -webkit-backdrop-filter: blur(6.4px);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  
+}
+
+@media screen and (min-width: 1260px) {
+  .container {
+    max-width: 60rem;
+  }
 }
 /*Titulo*/
 .container h1 {
-  font-size: 6rem;
+  font-size: 10rem;
+  width: 100%;
+  text-align: center;
+}
+
+@media screen and (max-width: 560px) {
+  .container{
+    padding: 2rem 1rem;
+  }
+
+  .container h1 {
+    font-size: 6rem;
+  }
 }
 
 /* Section para inserir informacoes */
@@ -53,13 +72,18 @@
 .timerAndProgressWrapper {
   margin: 2rem 0 2rem 0;
   height: 35rem;
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-.relogio span {
+
+.relogio{
+  display: flex;
+}
+
+.relogio p {
   font-size: 10rem;
 }
 
@@ -68,14 +92,15 @@
 .total {
   border: 0.1px solid rgb(37, 36, 36);
   border-radius: 2px;
-  width: 50%;
+  min-width: 20rem;
+  width: 30%;
   height: 1rem;
   margin-top: 3rem;
 }
 
 .progress {
   height: 100%;
-  border: 0.1px solid rgb(37, 36, 36);
+  border: none;
   border-radius: 2px;
   transition: width 1s ease-in-out;
 
