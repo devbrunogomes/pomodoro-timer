@@ -3,7 +3,7 @@ import "./timer.css";
 
 export const Timer = () => {
   //Toggle que vai definir o funcionamento do Timer
-  const [isMounted, setIsMounted] = useState(false);  
+  const [isMounted, setIsMounted] = useState(false);
 
   //tempo de trabalho em minutos
   const [workInMinutes, setWorkInMinutes] = useState(0);
@@ -18,18 +18,18 @@ export const Timer = () => {
   const seconds = totalTimeInSeconds % 60;
 
   //Barra de loading
-  const [progressState, setProgressState] = useState(0)
+  const [progressState, setProgressState] = useState(0);
   //------------------------------------------------------------
   useEffect(() => {
     //intervalId:
     let interval;
 
-    let progressPercentage = ((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds * 100
-    
+    let progressPercentage =
+      (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
 
     //Quando o contador chegar a 0, desmontar o componente
     if (totalTimeInSeconds === 0) {
-      setIsMounted(false)
+      setIsMounted(false);
       return;
     }
     //a cada 1s vai executar a funçao, mas só se isMounted for true
@@ -37,18 +37,18 @@ export const Timer = () => {
       interval = setInterval(() => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);
 
-        setProgressState(progressPercentage)
+        setProgressState(progressPercentage);
       }, 1000);
-    }    
+    }
 
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
-    return () => clearInterval(interval);    
+    return () => clearInterval(interval);
   }, [isMounted, totalTimeInSeconds]);
   //------------------------------------------------------------
   //Para lidar com a mudança dos valores
   function handleInputChange(event, setStateFunction) {
     const inputValue = event.target.value;
-    
+
     setStateFunction(parseInt(inputValue, 10) || 0);
   }
   //------------------------------------------------------------
@@ -64,39 +64,44 @@ export const Timer = () => {
   function handlePauseClick(event) {
     event.preventDefault();
     setIsMounted(!isMounted);
-    console.log(isMounted);
   }
   //------------------------------------------------------------
   function handleStopClick(event) {
-    event.preventDefault();  
-    setIsMounted(false)  
-    setTotalTimeInSeconds(0)
-    
+    event.preventDefault();
+    setIsMounted(false);
+    setTotalTimeInSeconds(0);
+    setProgressState(0);
   }
 
   //------------------------------------------------------------
   return (
     <main className="container">
-      <nav className="menu">
+      <h1>Pomodoro</h1>
+      <section className="menuOptions">
         <form>
-          <label htmlFor="workTime">Work</label>
-          <input
-            type="number"
-            name="timeToWork"
-            id="workTime"
-            onChange={(e) => handleInputChange(e, setWorkInMinutes)}
-          />
-          <label htmlFor="breakTime">Break</label>
-          <input
-            type="number"
-            name="timeToBreak"
-            id="breakTime"
-            onChange={(e) => handleInputChange(e, setBreakInMinutes)}
-          />
-          
+          <div>
+            <label htmlFor="workTime">Work </label>
+            <input
+              placeholder="min"
+              type="number"
+              name="timeToWork"
+              id="workTime"
+              onChange={(e) => handleInputChange(e, setWorkInMinutes)}
+            />
+          </div>
+          <div>
+            <label htmlFor="breakTime">Break</label>
+            <input
+              placeholder="min"
+              type="number"
+              name="timeToBreak"
+              id="breakTime"
+              onChange={(e) => handleInputChange(e, setBreakInMinutes)}
+            />
+          </div>
         </form>
-      </nav>
-      <section>
+      </section>
+      <section className="timerAndProgressWrapper">
         <div className="relogio">
           <span>{minutes < 10 ? `0${minutes}` : minutes}</span>
           <span>:</span>
@@ -104,31 +109,34 @@ export const Timer = () => {
         </div>
 
         <div className="total">
-          <div className="progress" style={{ width: `${progressState}%` }}></div>
+          <div
+            className="progress"
+            style={{ width: `${100 - progressState}%` }}
+          ></div>
         </div>
       </section>
-      <section>
-      <button
-            onClick={(event) => {
-              handleStartClick(event);
-            }}
-          >
-            START
-          </button>
-          <button
-            onClick={(event) => {
-              handlePauseClick(event);
-            }}
-          >
-            PAUSE
-          </button>
-          <button
-            onClick={(event) => {
-              handleStopClick(event);
-            }}
-          >
-            STOP
-          </button>
+      <section className="buttonWrapper">
+        <button
+          onClick={(event) => {
+            handleStartClick(event);
+          }}
+        >
+          START
+        </button>
+        <button
+          onClick={(event) => {
+            handlePauseClick(event);
+          }}
+        >
+          PAUSE
+        </button>
+        <button
+          onClick={(event) => {
+            handleStopClick(event);
+          }}
+        >
+          STOP
+        </button>
       </section>
     </main>
   );

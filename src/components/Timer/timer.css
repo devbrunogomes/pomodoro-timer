@@ -5,27 +5,88 @@
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  height: 30rem;
+  height: 98vh;
 
+}
+/*Titulo*/
+.container h1 {
+  border: 1px solid red;
+  font-size: 6rem;
+}
+
+/* Section para inserir informacoes */ 
+.menuOptions {
+  width: 100%;
+}
+.menuOptions form {
+  border: 1px solid red;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+  
+}
+.menuOptions form input {
+  width: 8rem;
+  padding: 0 0.5rem;
+}
+
+.menuOptions div {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
 }
 
 
+/* Timer e barra de progresso */
+
+.timerAndProgressWrapper {
+  margin: 2rem 0 2rem 0;
+  border: 1px solid red;
+  height: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .relogio span {
   font-size: 10rem;
 }
 
-/* teste */
+/* Barra de Progresso */
 
 .total {
   border: 1px solid rgb(0, 0, 0);
   width: 100%;
   height: 1rem;
+  margin-top: 3rem;
 }
 
 .progress {
   border: 1px solid red;
   height: 100%;
-  transition: width 1s;
+  transition: width 1s ease-in-out;
   
   background-color: white;
+}
+
+/* Botões */
+
+.buttonWrapper {
+  border: 1px solid red;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.buttonWrapper button {
+  height: 3rem;
+  width: 10rem;
 }
