@@ -2,15 +2,22 @@ import { useEffect, useState } from "react";
 import "./timer.css";
 
 export const Timer = () => {
+  //Estado paralelo do timer do work
+  const [paralelWorkTimer, setParalelWorkTimer] = useState(0)
+
+  //Estado paralelo do timer do break
+  const [paralelBreakTimer, setParalelBreakTimer] = useState(0)
+
   //Toggle que vai definir o funcionamento do Timer
   const [isMounted, setIsMounted] = useState(false);
 
   //tempo de trabalho em minutos
   const [workInMinutes, setWorkInMinutes] = useState(0);
-  const workInSeconds = workInMinutes * 60;
+  let workInSeconds = workInMinutes * 60;
 
   //tempo de descanso em minutos
   const [breakInMinutes, setBreakInMinutes] = useState(0);
+  const breakInSeconds = breakInMinutes * 60;
 
   //Tempo em segundos para o relógio
   const [totalTimeInSeconds, setTotalTimeInSeconds] = useState(0);
@@ -19,33 +26,55 @@ export const Timer = () => {
 
   //Barra de loading
   const [progressState, setProgressState] = useState(0);
+  let progressPercentage =
+    (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
+  
   //------------------------------------------------------------
+  //use effect para atualizar o timer com o tempo de trabalho
   useEffect(() => {
     //intervalId:
-    let interval;
-
-    let progressPercentage =
-      (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
+    let interval;    
 
     //Quando o contador chegar a 0, desmontar o componente
     if (totalTimeInSeconds === 0) {
       setIsMounted(false);
       return;
     }
+
     //a cada 1s vai executar a funçao, mas só se isMounted for true
     if (totalTimeInSeconds !== 0 && isMounted) {
       interval = setInterval(() => {
-        setTotalTimeInSeconds(totalTimeInSeconds - 1);
+        setTotalTimeInSeconds(totalTimeInSeconds - 1);       
+        setParalelWorkTimer(paralelWorkTimer - 1)
+        console.log(paralelWorkTimer)
+
+        //se o contador paralelo do work, for negativo, começar o contador paralelo do break
+        if (paralelWorkTimer < 1) {
+          setParalelBreakTimer(paralelBreakTimer - 1)
+          console.log(paralelBreakTimer)
+        }
 
         setProgressState(progressPercentage);
       }, 1000);
     }
 
+    //Quando o timer paralelo do Work chegar a 0, começar o break
+    if (paralelWorkTimer === 1) {
+      setTotalTimeInSeconds(breakInSeconds)
+    }
+
+    //Quando o timer paralelo do Break chegar a 0, recomeçar o timer do work
+    if (paralelBreakTimer === 2) {
+      setTotalTimeInSeconds(workInSeconds)
+      setParalelWorkTimer(workInSeconds)
+      setParalelBreakTimer(breakInSeconds)
+    }
+    
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
     return () => clearInterval(interval);
   }, [isMounted, totalTimeInSeconds]);
   //------------------------------------------------------------
-  //Para lidar com a mudança dos valores
+  //Para lidar com a mudança dos valores do inputs
   function handleInputChange(event, setStateFunction) {
     const inputValue = event.target.value;
 
@@ -55,9 +84,11 @@ export const Timer = () => {
   //Para lidar com o click do botao start
   function handleStartClick(event) {
     event.preventDefault();
-
+    console.log(breakInMinutes);
     setTotalTimeInSeconds(workInSeconds);
     setIsMounted(true);
+    setParalelWorkTimer(workInSeconds)
+    setParalelBreakTimer(breakInSeconds)
   }
   //------------------------------------------------------------
   //Para lidar com click do botao pause
@@ -66,6 +97,7 @@ export const Timer = () => {
     setIsMounted(!isMounted);
   }
   //------------------------------------------------------------
+  //Para lidar com click do botao stop
   function handleStopClick(event) {
     event.preventDefault();
     setIsMounted(false);
@@ -96,11 +128,13 @@ export const Timer = () => {
           <div>
             <label htmlFor="breakTime">Break</label>
             <input
+              disabled={isMounted}
               placeholder="min"
               type="number"
               name="timeToBreak"
               id="breakTime"
               onChange={(e) => handleInputChange(e, setBreakInMinutes)}
+              required
             />
           </div>
         </form>
