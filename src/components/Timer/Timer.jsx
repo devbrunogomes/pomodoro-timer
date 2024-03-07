@@ -82,11 +82,15 @@ export const Timer = () => {
           <div>
             <label htmlFor="workTime">Work </label>
             <input
+              min={1}
+              max={60}
+              disabled={isMounted}
               placeholder="min"
               type="number"
               name="timeToWork"
               id="workTime"
               onChange={(e) => handleInputChange(e, setWorkInMinutes)}
+              required
             />
           </div>
           <div>
@@ -121,7 +125,7 @@ export const Timer = () => {
             handleStartClick(event);
           }}
         >
-          START
+          {isMounted ? "RESTART" : "START"}
         </button>
         <button
           onClick={(event) => {
