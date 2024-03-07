@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./timer.css";
 
 export const Timer = () => {
+  //Toggle que vai definir o funcionamento do Timer
   const [isMounted, setIsMounted] = useState(false);  
 
   //tempo de trabalho em minutos
@@ -15,10 +16,16 @@ export const Timer = () => {
   const [totalTimeInSeconds, setTotalTimeInSeconds] = useState(0);
   const minutes = Math.floor(totalTimeInSeconds / 60);
   const seconds = totalTimeInSeconds % 60;
+
+  //Barra de loading
+  const [progressState, setProgressState] = useState(0)
   //------------------------------------------------------------
   useEffect(() => {
     //intervalId:
     let interval;
+
+    let progressPercentage = ((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds * 100
+    
 
     //Quando o contador chegar a 0, desmontar o componente
     if (totalTimeInSeconds === 0) {
@@ -29,6 +36,8 @@ export const Timer = () => {
     if (totalTimeInSeconds !== 0 && isMounted) {
       interval = setInterval(() => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);
+
+        setProgressState(progressPercentage)
       }, 1000);
     }    
 
@@ -39,7 +48,7 @@ export const Timer = () => {
   //Para lidar com a mudança dos valores
   function handleInputChange(event, setStateFunction) {
     const inputValue = event.target.value;
-    console.log(inputValue);
+    
     setStateFunction(parseInt(inputValue, 10) || 0);
   }
   //------------------------------------------------------------
@@ -95,7 +104,7 @@ export const Timer = () => {
         </div>
 
         <div className="total">
-          <div className="progress" style={{ width: `60%` }}></div>
+          <div className="progress" style={{ width: `${progressState}%` }}></div>
         </div>
       </section>
       <section>
