@@ -5,13 +5,11 @@ import { IoIosPause } from "react-icons/io";
 import { FaRegStopCircle } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
 
-
-
-
 export const Timer = () => {
   //Horas e minutos exibidos na Parabenização
   const [hoursCongrats, setHoursCongrats] = useState(0);
   const [minutesCongrats, setMinutesCongrats] = useState(0);
+  const [secondsCongrats, setSecondsCongrats] = useState(0);
   const [totalMinutesCongrats, setTotalMinutesCongrats] = useState(0);
 
   //Toggle que vai definir a exibição do congrats
@@ -70,14 +68,27 @@ export const Timer = () => {
       interval = setInterval(() => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);
         setParalelWorkTimer(paralelWorkTimer - 1);
-        setMinutesCongrats(60 - minutes);
+        setSecondsCongrats(secondsCongrats + 1);
         //console.log(paralelWorkTimer);
 
         //se o contador paralelo do work, for negativo, começar o contador paralelo do break
         if (paralelWorkTimer < 0) {
           setParalelBreakTimer(paralelBreakTimer - 1);
-          //console.log(paralelBreakTimer);
         }
+
+        if (secondsCongrats === 59) {
+          setMinutesCongrats(minutesCongrats + 1);
+          setSecondsCongrats(0);
+        }
+
+        if (minutesCongrats === 59) {
+          setHoursCongrats(hoursCongrats + 1);
+          setMinutesCongrats(0);
+        }
+
+        // console.log(`Segundos: ${secondsCongrats}`)
+        // console.log(`Minutos: ${minutesCongrats}`)
+        // console.log(`Horas: ${hoursCongrats}`)
       }, 1);
     }
 
@@ -95,15 +106,6 @@ export const Timer = () => {
     if (paralelWorkTimer === 0) {
       setTotalTimeInSeconds(breakInSeconds); //Começar o Break time
       //console.log(`break`);
-      setTotalMinutesCongrats(totalMinutesCongrats + workInMinutes);
-    }
-
-    //Sempre que acumular 60m em minutesCongrats atualizar as outras variaveis
-    if (totalMinutesCongrats === 60) {
-      setHoursCongrats(hoursCongrats + 1);
-
-      console.log(hoursCongrats);
-      setTotalMinutesCongrats(0);
     }
 
     //Quando o timer paralelo do Break chegar a 0, recomeçar o timer do work
@@ -116,7 +118,9 @@ export const Timer = () => {
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
     return () => clearInterval(interval);
   }, [isMounted, totalTimeInSeconds]);
+
   //------------------------------------------------------------
+
   //Para lidar com a mudança dos valores do inputs
   function handleInputChange(event, setStateFunction) {
     const inputValue = event.target.value;
@@ -137,9 +141,9 @@ export const Timer = () => {
     setAreWorking(true); //Para indicar o inicio da sessao
 
     //Para limpar qualquer valor anterior do congrats
-    setTotalMinutesCongrats(0) 
-    setMinutesCongrats(0)
-    setHoursCongrats(0)
+    setMinutesCongrats(0);
+    setHoursCongrats(0);
+    setSecondsCongrats(0);
   }
   //------------------------------------------------------------
   //Para lidar com click do botao pause
@@ -224,10 +228,8 @@ export const Timer = () => {
           disabled={workInMinutes <= 0 || breakInMinutes <= 0 ? true : false}
           style={{ display: `${!areWorking ? "flex" : "none"}` }}
           className="startButton"
-          
         >
-          
-          <MdOutlineNotStarted/>
+          <MdOutlineNotStarted />
         </button>
         <button
           onClick={(event) => {
@@ -236,8 +238,7 @@ export const Timer = () => {
           style={{ display: `${areWorking ? "flex" : "none"}` }}
           className="pauseButton"
         >
-          {isMounted ? <IoIosPause /> :  <FaPlay />
-}
+          {isMounted ? <IoIosPause /> : <FaPlay />}
         </button>
         <button
           onClick={(event) => {
@@ -247,7 +248,6 @@ export const Timer = () => {
           className="stopButton"
         >
           <FaRegStopCircle />
-
         </button>
       </section>
     </main>
