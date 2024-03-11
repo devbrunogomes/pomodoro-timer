@@ -6,30 +6,16 @@
   font-optical-sizing: auto;
   font-style: normal;
   overflow: hidden;
+  color: var(--black);
 }
 
 :root {
   font-size: 62.5%;
+  --black: #031B44;
+  --white: #fffefe;
+  --green: #53D3AF;
+  --red: #EE5436;
+  --blue: #7393DD;
 }
 
-body {
-  /* background-color: rgb(37, 36, 36); */
-  color: white;
-  height: 100vh;
-  width: 100vw;
-  background: #fc466b;
-  background: -webkit-linear-gradient(
-    to right,
-    #3f5efb,
-    #fc466b
-  ); 
-  background: linear-gradient(
-    to right,
-    #3f5efb,
-    #fc466b
-  );
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-}
+

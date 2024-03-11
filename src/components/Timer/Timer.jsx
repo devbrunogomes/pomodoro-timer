@@ -3,16 +3,18 @@ import "./timer.css";
 
 export const Timer = () => {
   //Horas e minutos exibidos na Parabenização
-  const [hoursCongrats, setHoursCongrats] = useState(0)
-  const [minutesCongrats, setMinutesCongrats] = useState(0)
-  const [totalMinutesCongrats, setTotalMinutesCongrats] = useState(0) 
+  const [hoursCongrats, setHoursCongrats] = useState(0);
+  const [minutesCongrats, setMinutesCongrats] = useState(0);
+  const [totalMinutesCongrats, setTotalMinutesCongrats] = useState(0);
 
+  //Toggle que vai definir a exibição do congrats
+  const [congratsIsMounted, setCongratsIsMounted] = useState(false);
 
   //Estado paralelo do timer do work
-  const [paralelWorkTimer, setParalelWorkTimer] = useState(0)
+  const [paralelWorkTimer, setParalelWorkTimer] = useState(0);
 
   //Estado paralelo do timer do break
-  const [paralelBreakTimer, setParalelBreakTimer] = useState(0)
+  const [paralelBreakTimer, setParalelBreakTimer] = useState(0);
 
   //Toggle que vai definir o funcionamento do Timer
   const [isMounted, setIsMounted] = useState(false);
@@ -32,15 +34,17 @@ export const Timer = () => {
 
   //Barra de loading
   const [progressState, setProgressState] = useState(0);
-  let workProgressPercentage = (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
+  let workProgressPercentage =
+    (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
 
-  let breakProgressPercentage = (((totalTimeInSeconds - breakInSeconds) * -1) / breakInSeconds) * 100;
-  
+  let breakProgressPercentage =
+    (((totalTimeInSeconds - breakInSeconds) * -1) / breakInSeconds) * 100;
+
   //------------------------------------------------------------
   //use effect para atualizar o timer com o tempo de trabalho
   useEffect(() => {
     //intervalId:
-    let interval;    
+    let interval;
 
     //Quando o contador chegar a 0, desmontar o componente
     if (totalTimeInSeconds < 0) {
@@ -51,52 +55,51 @@ export const Timer = () => {
     //a cada 1s vai executar a funçao, mas só se isMounted for true
     if (totalTimeInSeconds !== 0 && isMounted) {
       interval = setInterval(() => {
-        setTotalTimeInSeconds(totalTimeInSeconds - 1);       
-        setParalelWorkTimer(paralelWorkTimer - 1)
-        setMinutesCongrats((60 - minutes))
-        console.log(paralelWorkTimer)
-        
+        setTotalTimeInSeconds(totalTimeInSeconds - 1);
+        setParalelWorkTimer(paralelWorkTimer - 1);
+        setMinutesCongrats(60 - minutes);
+        console.log(paralelWorkTimer);
+
         //se o contador paralelo do work, for negativo, começar o contador paralelo do break
         if (paralelWorkTimer < 0) {
-          setParalelBreakTimer(paralelBreakTimer - 1)
-          console.log(paralelBreakTimer)
+          setParalelBreakTimer(paralelBreakTimer - 1);
+          console.log(paralelBreakTimer);
         }
-        
       }, 1);
     }
-    
+
     //Se o work timer for maior que 0, a barra de progresso será de work
     if (paralelWorkTimer > 0) {
-      setProgressState(workProgressPercentage);      
+      setProgressState(workProgressPercentage);
     }
 
     //Se o work timer for menor que 0 (significando que é break time), a barra de progresso será de break
     if (paralelWorkTimer < 0) {
-      setProgressState(breakProgressPercentage);      
+      setProgressState(breakProgressPercentage);
     }
 
     //Quando o timer paralelo do Work chegar a 0, começar o break
     if (paralelWorkTimer === 0) {
-      setTotalTimeInSeconds(breakInSeconds) //Começar o Break time
-      console.log(`break`)
-      setTotalMinutesCongrats(totalMinutesCongrats + workInMinutes)
+      setTotalTimeInSeconds(breakInSeconds); //Começar o Break time
+      console.log(`break`);
+      setTotalMinutesCongrats(totalMinutesCongrats + workInMinutes);
     }
 
     //Sempre que acumular 60m em minutesCongrats atualizar as outras variaveis
     if (totalMinutesCongrats === 60) {
-      setHoursCongrats(hoursCongrats + 1)
-      
-      console.log(hoursCongrats)
-      setTotalMinutesCongrats(0)
+      setHoursCongrats(hoursCongrats + 1);
+
+      console.log(hoursCongrats);
+      setTotalMinutesCongrats(0);
     }
 
     //Quando o timer paralelo do Break chegar a 0, recomeçar o timer do work
     if (paralelBreakTimer === 1) {
-      setTotalTimeInSeconds(workInSeconds) //Começar o Work time
-      setParalelWorkTimer(workInSeconds) //Recomeçar o work timer paralelo
-      setParalelBreakTimer(breakInSeconds) //Recomeçar o break timer paralelo
+      setTotalTimeInSeconds(workInSeconds); //Começar o Work time
+      setParalelWorkTimer(workInSeconds); //Recomeçar o work timer paralelo
+      setParalelBreakTimer(breakInSeconds); //Recomeçar o break timer paralelo
     }
-    
+
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
     return () => clearInterval(interval);
   }, [isMounted, totalTimeInSeconds]);
@@ -114,8 +117,9 @@ export const Timer = () => {
     console.log(breakInMinutes);
     setTotalTimeInSeconds(workInSeconds);
     setIsMounted(true);
-    setParalelWorkTimer(workInSeconds)
-    setParalelBreakTimer(breakInSeconds)
+    setParalelWorkTimer(workInSeconds);
+    setParalelBreakTimer(breakInSeconds);
+    setCongratsIsMounted(false) //Para nao exibir o congrats
   }
   //------------------------------------------------------------
   //Para lidar com click do botao pause
@@ -130,12 +134,13 @@ export const Timer = () => {
     setIsMounted(false);
     setTotalTimeInSeconds(0);
     setProgressState(0);
+    setCongratsIsMounted(true); //Para exibir o congrats
   }
 
   //------------------------------------------------------------
   return (
     <main className="container">
-      <h1>Pomodoro</h1>
+      <h1>OnFocus</h1>
       <section className="menuOptions">
         <form>
           <div>
@@ -180,15 +185,21 @@ export const Timer = () => {
           ></div>
         </div>
       </section>
-      <section className="congratsWrapper">
+      <section
+        className="congratsWrapper"
+        style={{ visibility: `${congratsIsMounted ? '' : "hidden"}` }}
+      >
         <h2>Parabéns!</h2>
-        <p>Você trabalhou por {hoursCongrats}hs e {minutesCongrats}m</p>
+        <p>
+          Você trabalhou por {hoursCongrats}hs e {minutesCongrats}m
+        </p>
       </section>
       <section className="buttonWrapper">
         <button
           onClick={(event) => {
             handleStartClick(event);
           }}
+          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
         >
           {isMounted ? "RESTART" : "START"}
         </button>
@@ -196,6 +207,7 @@ export const Timer = () => {
           onClick={(event) => {
             handlePauseClick(event);
           }}
+          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
         >
           PAUSE
         </button>
@@ -203,6 +215,7 @@ export const Timer = () => {
           onClick={(event) => {
             handleStopClick(event);
           }}
+          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
         >
           STOP
         </button>
