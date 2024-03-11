@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import "./timer.css";
 
 export const Timer = () => {
+  //Horas e minutos exibidos na Parabenização
+  const [hoursCongrats, setHoursCongrats] = useState(0)
+  const [minutesCongrats, setMinutesCongrats] = useState(0)
+  const [totalMinutesCongrats, setTotalMinutesCongrats] = useState(0) 
+
+
   //Estado paralelo do timer do work
   const [paralelWorkTimer, setParalelWorkTimer] = useState(0)
 
@@ -26,8 +32,9 @@ export const Timer = () => {
 
   //Barra de loading
   const [progressState, setProgressState] = useState(0);
-  let progressPercentage =
-    (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
+  let workProgressPercentage = (((totalTimeInSeconds - workInSeconds) * -1) / workInSeconds) * 100;
+
+  let breakProgressPercentage = (((totalTimeInSeconds - breakInSeconds) * -1) / breakInSeconds) * 100;
   
   //------------------------------------------------------------
   //use effect para atualizar o timer com o tempo de trabalho
@@ -36,7 +43,7 @@ export const Timer = () => {
     let interval;    
 
     //Quando o contador chegar a 0, desmontar o componente
-    if (totalTimeInSeconds === 0) {
+    if (totalTimeInSeconds < 0) {
       setIsMounted(false);
       return;
     }
@@ -46,28 +53,48 @@ export const Timer = () => {
       interval = setInterval(() => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);       
         setParalelWorkTimer(paralelWorkTimer - 1)
+        setMinutesCongrats((60 - minutes))
         console.log(paralelWorkTimer)
-
+        
         //se o contador paralelo do work, for negativo, começar o contador paralelo do break
-        if (paralelWorkTimer < 1) {
+        if (paralelWorkTimer < 0) {
           setParalelBreakTimer(paralelBreakTimer - 1)
           console.log(paralelBreakTimer)
         }
+        
+      }, 1);
+    }
+    
+    //Se o work timer for maior que 0, a barra de progresso será de work
+    if (paralelWorkTimer > 0) {
+      setProgressState(workProgressPercentage);      
+    }
 
-        setProgressState(progressPercentage);
-      }, 1000);
+    //Se o work timer for menor que 0 (significando que é break time), a barra de progresso será de break
+    if (paralelWorkTimer < 0) {
+      setProgressState(breakProgressPercentage);      
     }
 
     //Quando o timer paralelo do Work chegar a 0, começar o break
-    if (paralelWorkTimer === 1) {
-      setTotalTimeInSeconds(breakInSeconds)
+    if (paralelWorkTimer === 0) {
+      setTotalTimeInSeconds(breakInSeconds) //Começar o Break time
+      console.log(`break`)
+      setTotalMinutesCongrats(totalMinutesCongrats + workInMinutes)
+    }
+
+    //Sempre que acumular 60m em minutesCongrats atualizar as outras variaveis
+    if (totalMinutesCongrats === 60) {
+      setHoursCongrats(hoursCongrats + 1)
+      
+      console.log(hoursCongrats)
+      setTotalMinutesCongrats(0)
     }
 
     //Quando o timer paralelo do Break chegar a 0, recomeçar o timer do work
-    if (paralelBreakTimer === 2) {
-      setTotalTimeInSeconds(workInSeconds)
-      setParalelWorkTimer(workInSeconds)
-      setParalelBreakTimer(breakInSeconds)
+    if (paralelBreakTimer === 1) {
+      setTotalTimeInSeconds(workInSeconds) //Começar o Work time
+      setParalelWorkTimer(workInSeconds) //Recomeçar o work timer paralelo
+      setParalelBreakTimer(breakInSeconds) //Recomeçar o break timer paralelo
     }
     
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
@@ -152,6 +179,10 @@ export const Timer = () => {
             style={{ width: `${100 - progressState}%` }}
           ></div>
         </div>
+      </section>
+      <section className="congratsWrapper">
+        <h2>Parabéns!</h2>
+        <p>Você trabalhou por {hoursCongrats}hs e {minutesCongrats}m</p>
       </section>
       <section className="buttonWrapper">
         <button
