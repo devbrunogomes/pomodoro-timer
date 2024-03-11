@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import "./timer.css";
+import { MdOutlineNotStarted } from "react-icons/md";
+import { IoIosPause } from "react-icons/io";
+import { FaRegStopCircle } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa6";
+
+
+
 
 export const Timer = () => {
   //Horas e minutos exibidos na Parabenização
@@ -18,6 +25,12 @@ export const Timer = () => {
 
   //Toggle que vai definir o funcionamento do Timer
   const [isMounted, setIsMounted] = useState(false);
+
+  //Toggle que vai definir se os botoes de pause e stop estarao habilitados
+  const [pauseStopToggle, setPauseStopToggle] = useState(false);
+
+  //Toggle que vai vai definir se uma sessao está em andamento
+  const [areWorking, setAreWorking] = useState(false);
 
   //tempo de trabalho em minutos
   const [workInMinutes, setWorkInMinutes] = useState(0);
@@ -58,14 +71,14 @@ export const Timer = () => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);
         setParalelWorkTimer(paralelWorkTimer - 1);
         setMinutesCongrats(60 - minutes);
-        console.log(paralelWorkTimer);
+        //console.log(paralelWorkTimer);
 
         //se o contador paralelo do work, for negativo, começar o contador paralelo do break
         if (paralelWorkTimer < 0) {
           setParalelBreakTimer(paralelBreakTimer - 1);
-          console.log(paralelBreakTimer);
+          //console.log(paralelBreakTimer);
         }
-      }, 1);
+      }, 1000);
     }
 
     //Se o work timer for maior que 0, a barra de progresso será de work
@@ -81,7 +94,7 @@ export const Timer = () => {
     //Quando o timer paralelo do Work chegar a 0, começar o break
     if (paralelWorkTimer === 0) {
       setTotalTimeInSeconds(breakInSeconds); //Começar o Break time
-      console.log(`break`);
+      //console.log(`break`);
       setTotalMinutesCongrats(totalMinutesCongrats + workInMinutes);
     }
 
@@ -115,11 +128,18 @@ export const Timer = () => {
   function handleStartClick(event) {
     event.preventDefault();
     console.log(breakInMinutes);
-    setTotalTimeInSeconds(workInSeconds);
-    setIsMounted(true);
-    setParalelWorkTimer(workInSeconds);
-    setParalelBreakTimer(breakInSeconds);
-    setCongratsIsMounted(false) //Para nao exibir o congrats
+    setTotalTimeInSeconds(workInSeconds); //Iniciar o contador
+    setIsMounted(true); //Iniciar o funcionamento do Timer
+    setParalelWorkTimer(workInSeconds); //Iniciar o contador paralelo (work)
+    setParalelBreakTimer(breakInSeconds); //Iniciar o contador paralelo (break)
+    setCongratsIsMounted(false); //Para nao exibir o congrats
+    setPauseStopToggle(true); //Para exibir os botoes de stop e pause
+    setAreWorking(true); //Para indicar o inicio da sessao
+
+    //Para limpar qualquer valor anterior do congrats
+    setTotalMinutesCongrats(0) 
+    setMinutesCongrats(0)
+    setHoursCongrats(0)
   }
   //------------------------------------------------------------
   //Para lidar com click do botao pause
@@ -135,6 +155,8 @@ export const Timer = () => {
     setTotalTimeInSeconds(0);
     setProgressState(0);
     setCongratsIsMounted(true); //Para exibir o congrats
+    setPauseStopToggle(false);
+    setAreWorking(false);
   }
 
   //------------------------------------------------------------
@@ -187,7 +209,7 @@ export const Timer = () => {
       </section>
       <section
         className="congratsWrapper"
-        style={{ visibility: `${congratsIsMounted ? '' : "hidden"}` }}
+        style={{ visibility: `${congratsIsMounted ? "" : "hidden"}` }}
       >
         <h2>Parabéns!</h2>
         <p>
@@ -199,25 +221,33 @@ export const Timer = () => {
           onClick={(event) => {
             handleStartClick(event);
           }}
-          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
+          disabled={workInMinutes <= 0 || breakInMinutes <= 0 ? true : false}
+          style={{ display: `${!areWorking ? "flex" : "none"}` }}
+          className="startButton"
+          
         >
-          {isMounted ? "RESTART" : "START"}
+          
+          <MdOutlineNotStarted/>
         </button>
         <button
           onClick={(event) => {
             handlePauseClick(event);
           }}
-          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
+          style={{ display: `${areWorking ? "flex" : "none"}` }}
+          className="pauseButton"
         >
-          PAUSE
+          {isMounted ? <IoIosPause /> :  <FaPlay />
+}
         </button>
         <button
           onClick={(event) => {
             handleStopClick(event);
           }}
-          disabled={(workInMinutes <= 0)  || (breakInMinutes <= 0) ? true : false}
+          style={{ display: `${areWorking ? "flex" : "none"}` }}
+          className="stopButton"
         >
-          STOP
+          <FaRegStopCircle />
+
         </button>
       </section>
     </main>

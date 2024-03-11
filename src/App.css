@@ -6,7 +6,7 @@
   font-optical-sizing: auto;
   font-style: normal;
   overflow: hidden;
-  color: var(--black);
+  
 }
 
 :root {
@@ -17,5 +17,19 @@
   --red: #EE5436;
   --blue: #7393DD;
 }
+
+button {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  font-size: 10rem;
+  
+  
+}
+
+
 
 

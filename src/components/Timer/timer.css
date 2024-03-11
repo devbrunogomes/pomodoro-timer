@@ -6,6 +6,7 @@
   width: 100vw;
   height: calc(100vh - 1px);
   margin: 0 auto;
+  color: var(--black);
 }
 
 @media screen and (min-width: 1260px) {
@@ -78,6 +79,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
 }
 
 .relogio {
@@ -139,9 +141,15 @@
   gap: 3rem;
 }
 
-.buttonWrapper button {
-  height: 3rem;
-  width: 10rem;
-  border-radius: 2px;
-  border: none;
+.startButton {
+  color: var(--blue);
 }
+
+.pauseButton {
+  color: var(--green);
+}
+
+.stopButton {
+  color: var(--red);
+}
+
