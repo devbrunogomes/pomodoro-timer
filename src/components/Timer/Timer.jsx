@@ -78,7 +78,7 @@ export const Timer = () => {
           setParalelBreakTimer(paralelBreakTimer - 1);
           //console.log(paralelBreakTimer);
         }
-      }, 1000);
+      }, 1);
     }
 
     //Se o work timer for maior que 0, a barra de progresso será de work
