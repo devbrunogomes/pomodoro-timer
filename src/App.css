@@ -11,11 +11,26 @@
 
 :root {
   font-size: 62.5%;
-  --black: #031B44;
-  --white: #fffefe;
-  --green: #53D3AF;
-  --red: #EE5436;
-  --blue: #7393DD;
+  --font-color: #031B44;
+  --background-color: #fffefe;
+  --pause-play-button-color: #53D3AF;
+  --stop-button-color-button: #EE5436;
+  --start-button-color: #7393DD;
+  --box-shadow-color1: #c9c9c9;
+  --box-shadow-color2: #ffffff;
+  
+  
+}
+
+.dark {
+  --font-color: #fffefe;
+  --background-color: #031B44;
+  --pause-play-button-color: #53D3AF;
+  --stop-button-color-button: #EE5436;
+  --start-button-color: #fffefe;
+  --box-shadow-color1: #000000;
+  --box-shadow-color2: #021638;
+  transition: 1s ease-in-out;
 }
 
 button {
@@ -25,10 +40,14 @@ button {
   justify-content: center;
   background: none;
   border: none;
-  font-size: 10rem;
-  
-  
+  font-size: 7rem;  
 }
+
+
+
+
+
+
 
 
 

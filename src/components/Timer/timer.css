@@ -1,56 +1,142 @@
+main {
+  width: 100%;
+  background-color: var(--background-color);
+  transition: background-color 1s ease-in-out;
+}
+
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100vw;
+  /* width: 100vw; */
   height: calc(100vh - 1px);
+  max-height: 1700px;
   margin: 0 auto;
-  color: var(--black);
+  color: var(--font-color);
+  background-color: var(--background-color);
+  transition: background-color 1s ease-in-out;
+  transition: box-shadow 0.5s ease-in-out;
 }
 
-@media screen and (min-width: 1260px) {
+@media screen and (min-width: 1024px) {
   .container {
     max-width: 60rem;
     border-radius: 50px;
-    background: var(--white);
-    box-shadow: 20px 20px 60px #c9c9c9, -20px -20px 60px #ffffff;
+    background: var(--background-color);
+    box-shadow: 20px 20px 60px var(--box-shadow-color1),
+      -20px -20px 60px var(--box-shadow-color2);
+    transition: 1s ease-in-out;
+  }
+
+  .titleAndSwitchWrapper h1 {
+    font-size: 10rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .relogio p {
+    font-size: 10rem;
+    font-weight: 500;
   }
 }
-/*Titulo*/
-.container h1 {
-  font-size: 10rem;
-  font-weight: 800;
-  width: 100%;
-  text-align: center;
-}
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 1024px) {
   .container {
+    min-width: 100vw;
     padding: 2rem 1rem;
+    transition: 1s ease-in-out;
   }
 
-  .container h1 {
-    font-size: 6rem;
+  .titleAndSwitchWrapper h1 {
+    font-size: 8rem;
+    font-weight: 800;
+    text-align: center;
   }
+
+  .relogio p {
+    font-size: 10rem;
+    font-weight: 500;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .titleAndSwitchWrapper h1 {
+    font-size: 7rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .relogio p {
+    font-size: 6rem;
+    font-weight: 500;
+  }
+
+  .container {
+    padding: 0.2rem;
+    transition: 1s ease-in-out;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  .container {
+    padding: 0.2rem;
+    transition: 1s ease-in-out;
+  }
+  .titleAndSwitchWrapper h1 {
+    font-size: 5rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .relogio p {
+    font-size: 4rem;
+    font-weight: 500;
+  }
+  
+
+}
+
+/* Titulo e Switchs buttons */
+
+.titleAndSwitchWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.switchThemeMode {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: end;
+  gap: 2rem;
+}
+
+.switchThemeMode > button {
+  font-size: 2rem;
+  color: var(--font-color);
 }
 
 /* Section para inserir informacoes */
 .menuOptions {
   width: 100%;
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4rem;
 }
+
 .menuOptions form {
-  margin-top: 2rem;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   gap: 6rem;
 
-  width: 100%;
+  width: 50%;
 }
-.menuOptions div {
+.menuOptions form div {
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
@@ -65,9 +151,26 @@
   width: 6rem;
   padding: 0 0.5rem;
   background-color: none;
-  border: 1px solid var(--black);
+  border: 1px solid var(--font-color);
   border-radius: 2px;
   color: rgb(0, 0, 0);
+}
+
+.menuOptions .arrow {
+  transition: transform 0.5s ease-in-out;
+  margin: 0 auto;
+}
+
+.arrow * {
+  font-size: 1.5rem;
+}
+
+.translateLeft {
+  transform: translateX(-6rem);
+}
+
+.translateRight {
+  transform: translateX(6rem);
 }
 
 /* Timer e barra de progresso */
@@ -86,28 +189,28 @@
   display: flex;
 }
 
-.relogio p {
+/* .relogio p {
   font-size: 10rem;
   font-weight: 500;
-}
+} */
 
 /* Barra de Progresso */
 
 .total {
-  border: 0.1px solid rgb(37, 36, 36);
+  border: 0.1px solid var(--font-color);
   border-radius: 2px;
   min-width: 20rem;
-  width: 30%;
+  width: 25%;
+  max-width: 40rem;
   height: 1rem;
-  
 }
 
 .progress {
   height: 100%;
   border: none;
   border-radius: 2px;
-  transition: width 1s ease-in-out;
-  background-color: var(--black);
+  transition: width 0.7s ease;
+  background-color: var(--font-color);
 }
 
 /* Congrats */
@@ -133,7 +236,7 @@
 /* Botões */
 
 .buttonWrapper {
-  height: 10rem;
+  /* height: 10rem; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,14 +245,42 @@
 }
 
 .startButton {
-  color: var(--blue);
+  color: var(--start-button-color);
+  transition: filter 0.5s ease-in-out;
 }
 
 .pauseButton {
-  color: var(--green);
+  color: var(--pause-play-button-color);
+  transition: filter 0.5s ease-in-out;
 }
 
 .stopButton {
-  color: var(--red);
+  color: var(--stop-button-color-button);
+  transition: filter 0.5s ease-in-out;
 }
 
+.startButton :hover {
+  filter: brightness(115%);
+  transition: filter 0.5s ease-in-out;
+}
+
+.pauseButton :hover {
+  filter: brightness(115%);
+  transition: filter 0.5s ease-in-out;
+}
+
+.stopButton :hover {
+  filter: brightness(115%);
+  transition: filter 0.5s ease-in-out;
+}
+
+/* Footer */
+
+footer {
+  margin-top: 4rem;
+}
+
+footer span a {
+  margin-left: 0.4rem;
+  color: var(--font-color);
+}

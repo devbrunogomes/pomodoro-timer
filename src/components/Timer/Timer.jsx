@@ -4,13 +4,24 @@ import { MdOutlineNotStarted } from "react-icons/md";
 import { IoIosPause } from "react-icons/io";
 import { FaRegStopCircle } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
+import { FaRegLightbulb } from "react-icons/fa";
+import { FaLightbulb } from "react-icons/fa";
+import { TiArrowUpThick } from "react-icons/ti";
+import { Howl } from "howler";
+import soundNote from "../../assets/notification.mp3";
+import stopSound from "../../assets/stop-sound.mp3";
 
 export const Timer = () => {
+  //Toggle para o light/dark mode
+  const [lightMode, setLightMode] = useState(true);
+
+  //Toggle para o indicador visual de work e break
+  const [isTimeToWorkForArrow, setIsTimeToWorkForArrow] = useState(true);
+
   //Horas e minutos exibidos na Parabenização
   const [hoursCongrats, setHoursCongrats] = useState(0);
   const [minutesCongrats, setMinutesCongrats] = useState(0);
   const [secondsCongrats, setSecondsCongrats] = useState(0);
-  const [totalMinutesCongrats, setTotalMinutesCongrats] = useState(0);
 
   //Toggle que vai definir a exibição do congrats
   const [congratsIsMounted, setCongratsIsMounted] = useState(false);
@@ -68,7 +79,7 @@ export const Timer = () => {
       interval = setInterval(() => {
         setTotalTimeInSeconds(totalTimeInSeconds - 1);
         setParalelWorkTimer(paralelWorkTimer - 1);
-        setSecondsCongrats(secondsCongrats + 1);
+        setSecondsCongrats(secondsCongrats + 1); //aumentar 1 segundo no tempo geral
         //console.log(paralelWorkTimer);
 
         //se o contador paralelo do work, for negativo, começar o contador paralelo do break
@@ -76,36 +87,46 @@ export const Timer = () => {
           setParalelBreakTimer(paralelBreakTimer - 1);
         }
 
+        //Ifs de atualizaçao do contador do tempo geral
         if (secondsCongrats === 59) {
-          setMinutesCongrats(minutesCongrats + 1);
+          setMinutesCongrats(minutesCongrats + 1); //setar os minutos
           setSecondsCongrats(0);
         }
 
         if (minutesCongrats === 59) {
-          setHoursCongrats(hoursCongrats + 1);
+          setHoursCongrats(hoursCongrats + 1); //setar as horas
           setMinutesCongrats(0);
         }
 
         // console.log(`Segundos: ${secondsCongrats}`)
         // console.log(`Minutos: ${minutesCongrats}`)
         // console.log(`Horas: ${hoursCongrats}`)
-      }, 1);
+      }, 1000);
     }
 
     //Se o work timer for maior que 0, a barra de progresso será de work
     if (paralelWorkTimer > 0) {
       setProgressState(workProgressPercentage);
+      setIsTimeToWorkForArrow(true);
     }
 
     //Se o work timer for menor que 0 (significando que é break time), a barra de progresso será de break
     if (paralelWorkTimer < 0) {
       setProgressState(breakProgressPercentage);
+      setIsTimeToWorkForArrow(false);
     }
 
     //Quando o timer paralelo do Work chegar a 0, começar o break
     if (paralelWorkTimer === 0) {
       setTotalTimeInSeconds(breakInSeconds); //Começar o Break time
       //console.log(`break`);
+      if (isMounted) {
+        const notificationSound = new Howl({
+          src: [soundNote],
+        });
+        notificationSound.play();
+      }
+      
     }
 
     //Quando o timer paralelo do Break chegar a 0, recomeçar o timer do work
@@ -113,6 +134,12 @@ export const Timer = () => {
       setTotalTimeInSeconds(workInSeconds); //Começar o Work time
       setParalelWorkTimer(workInSeconds); //Recomeçar o work timer paralelo
       setParalelBreakTimer(breakInSeconds); //Recomeçar o break timer paralelo
+      if (isMounted) {
+        const notificationSound = new Howl({
+          src: [soundNote],
+        });
+        notificationSound.play();
+      }
     }
 
     //Saída da funçao limpando o intervalo, cancelando a renderizacao
@@ -161,95 +188,134 @@ export const Timer = () => {
     setCongratsIsMounted(true); //Para exibir o congrats
     setPauseStopToggle(false);
     setAreWorking(false);
+
+    const notificationStopSound = new Howl({
+      src: [stopSound],
+    });
+    notificationStopSound.play();
+    // setIsTimeToWorkForArrow(true);
+  }
+  //------------------------------------------------------------
+  //Para lidar com o click dos botoes light/dark mode
+  function handleSwitchModeButtons(event) {
+    event.preventDefault();
+    setLightMode(!lightMode);
   }
 
   //------------------------------------------------------------
   return (
-    <main className="container">
-      <h1>OnFocus</h1>
-      <section className="menuOptions">
-        <form>
-          <div>
-            <label htmlFor="workTime">Work </label>
-            <input
-              min={1}
-              max={60}
-              disabled={isMounted}
-              placeholder="min"
-              type="number"
-              name="timeToWork"
-              id="workTime"
-              onChange={(e) => handleInputChange(e, setWorkInMinutes)}
-              required
-            />
+    <main className={`${lightMode ? "light" : "dark"}`}>
+      <div className={`container ${lightMode ? "light" : "dark"}`}>
+        <div className="titleAndSwitchWrapper">
+          <h1>OnFocus</h1>
+          <div className="switchThemeMode">
+            <button
+              className="lightDarkModeButton"
+              onClick={(e) => handleSwitchModeButtons(e)}
+            >
+              {lightMode ? <FaLightbulb /> : <FaRegLightbulb />}
+            </button>
           </div>
-          <div>
-            <label htmlFor="breakTime">Break</label>
-            <input
-              disabled={isMounted}
-              placeholder="min"
-              type="number"
-              name="timeToBreak"
-              id="breakTime"
-              onChange={(e) => handleInputChange(e, setBreakInMinutes)}
-              required
-            />
-          </div>
-        </form>
-      </section>
-      <section className="timerAndProgressWrapper">
-        <div className="relogio">
-          <p>{minutes < 10 ? `0${minutes}` : minutes}</p>
-          <p>:</p>
-          <p>{seconds < 10 ? `0${seconds}` : seconds}</p>
         </div>
-
-        <div className="total">
+        <section className="menuOptions">
+          <form>
+            <div>
+              <label htmlFor="workTime">Focus </label>
+              <input
+                min={1}
+                max={60}
+                disabled={isMounted}
+                placeholder="min"
+                type="number"
+                name="timeToWork"
+                id="workTime"
+                onChange={(e) => handleInputChange(e, setWorkInMinutes)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="breakTime">Break</label>
+              <input
+                disabled={isMounted}
+                placeholder="min"
+                type="number"
+                name="timeToBreak"
+                id="breakTime"
+                onChange={(e) => handleInputChange(e, setBreakInMinutes)}
+                required
+              />
+            </div>
+          </form>
           <div
-            className="progress"
-            style={{ width: `${100 - progressState}%` }}
-          ></div>
-        </div>
-      </section>
-      <section
-        className="congratsWrapper"
-        style={{ visibility: `${congratsIsMounted ? "" : "hidden"}` }}
-      >
-        <h2>Parabéns!</h2>
-        <p>
-          Você trabalhou por {hoursCongrats}hs e {minutesCongrats}m
-        </p>
-      </section>
-      <section className="buttonWrapper">
-        <button
-          onClick={(event) => {
-            handleStartClick(event);
-          }}
-          disabled={workInMinutes <= 0 || breakInMinutes <= 0 ? true : false}
-          style={{ display: `${!areWorking ? "flex" : "none"}` }}
-          className="startButton"
+            className={`arrow ${
+              isTimeToWorkForArrow ? "translateLeft" : "translateRight"
+            }`}
+          >
+            <TiArrowUpThick />
+          </div>
+        </section>
+        <section className="timerAndProgressWrapper">
+          <div className="relogio">
+            <p>{minutes < 10 ? `0${minutes}` : minutes}</p>
+            <p>:</p>
+            <p>{seconds < 10 ? `0${seconds}` : seconds}</p>
+          </div>
+
+          <div className="total">
+            <div
+              className="progress"
+              style={{ width: `${100 - progressState}%` }}
+            ></div>
+          </div>
+        </section>
+        <section
+          className="congratsWrapper"
+          style={{ visibility: `${congratsIsMounted ? "" : "hidden"}` }}
         >
-          <MdOutlineNotStarted />
-        </button>
-        <button
-          onClick={(event) => {
-            handlePauseClick(event);
-          }}
-          style={{ display: `${areWorking ? "flex" : "none"}` }}
-          className="pauseButton"
-        >
-          {isMounted ? <IoIosPause /> : <FaPlay />}
-        </button>
-        <button
-          onClick={(event) => {
-            handleStopClick(event);
-          }}
-          style={{ display: `${areWorking ? "flex" : "none"}` }}
-          className="stopButton"
-        >
-          <FaRegStopCircle />
-        </button>
-      </section>
+          <h2>Parabéns!</h2>
+          <p>
+            Você focou por {hoursCongrats}hs e {minutesCongrats}m
+          </p>
+        </section>
+        <section className="buttonWrapper">
+          <button
+            onClick={(event) => {
+              handleStartClick(event);
+            }}
+            disabled={workInMinutes <= 0 || breakInMinutes <= 0 ? true : false}
+            style={{ display: `${!areWorking ? "flex" : "none"}` }}
+            className="startButton"
+          >
+            <MdOutlineNotStarted />
+          </button>
+          <button
+            onClick={(event) => {
+              handlePauseClick(event);
+            }}
+            style={{ display: `${areWorking ? "flex" : "none"}` }}
+            className="pauseButton"
+          >
+            {isMounted ? <IoIosPause /> : <FaPlay />}
+          </button>
+          <button
+            onClick={(event) => {
+              handleStopClick(event);
+            }}
+            style={{ display: `${areWorking ? "flex" : "none"}` }}
+            className="stopButton"
+          >
+            <FaRegStopCircle />
+          </button>
+        </section>
+        <footer>
+          <span>
+            Feito por
+            <a href="" target="_blank">
+              Bruno Gomes
+            </a>
+          </span>
+        </footer>
+      </div>
     </main>
   );
 };
