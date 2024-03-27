@@ -310,7 +310,7 @@ export const Timer = () => {
         <footer>
           <span>
             Feito por
-            <a href="" target="_blank">
+            <a href="https://devbrunogomes.vercel.app/" target="_blank">
               Bruno Gomes
             </a>
           </span>

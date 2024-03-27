@@ -7,7 +7,7 @@ main {
 .container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-direction: column;
   /* width: 100vw; */
   height: calc(100vh - 1px);
@@ -154,6 +154,13 @@ main {
   border: 1px solid var(--font-color);
   border-radius: 2px;
   color: rgb(0, 0, 0);
+}
+
+@media screen and (max-width: 415px) {
+  /* Para melhor responsividade em dispositivos pequenos */
+  .menuOptions form div input {
+    width: 5rem; 
+  }
 }
 
 .menuOptions .arrow {
