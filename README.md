@@ -30,7 +30,7 @@ Sometimes, maintaining focus can be challenging. That's why this application was
 
 <h2 id="started">🛠 Tools used</h2>
 
-For made this app, i dont needed a lot of technologies, the challenge was the logic to make it work well, but i used an lib for react icons and litte of inspiration.
+For made this app, I don't needed a lot of technologies, the challenge was the logic to make it work well, but I used an lib for react icons and litte of inspiration.
 
 
 <h2 id="colab">🤝 About Me</h2>
